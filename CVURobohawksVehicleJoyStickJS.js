@@ -255,7 +255,6 @@ VirtualJoystick.prototype._onMoveIncremental = function (x, y) {
         this._stickX = this._baseX  + x;
         this._stickY = this._baseY + y;
 
-        // this._move(this._stickEl.style, x, y);
         this._move(this._stickEl.style, (this._stickX - this._stickEl.width / 2), (this._stickY - this._stickEl.height / 2));
     }
 }

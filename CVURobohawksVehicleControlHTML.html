@@ -116,8 +116,6 @@
         <a href="./CVURobohawksVehicleWheelTuneHTML.html" id="wheel-adjust-link">Adjust wheel error</a>
     </div>
     <script src="./CVURobohawksVehicleJoyStickJS.js"></script>
-    <!-- <script src="./libgp.js"></script> -->
-    <!-- <script src="./gpcon.js"></script> -->
     <script>
         console.log("touchscreen is", VirtualJoystick.touchScreenAvailable() ? "available" : "not available");
 
@@ -153,26 +151,6 @@
 
         });
 
-        // setInterval_realStickControl(function () {
-
-        //     //check if realstick !=0
-        //     //if it doesn't, get the position and set the virtual joy to be controlled by it
-        //     joystick._onDownIncremental();
-        //     //move the virtual joy to the correct position
-        //     joystick._onMoveIncrememental(0, 0);
-        //     //if the realsitck =0, release the virtual stick.(and set to 0)
-        //     joystick._onUp();
-
-        //     //and make it still work if the real stick isn't connected
-
-        // }, 1 / 10 * 1000);
-        // joystick._onDownIncremental();
-        // joystick._onMoveIncremental(10, 10);
-
-
-        // setInterval(function() {
-
-        // },100);
 
         joystick.addEventListener('touchStart', function () {
             console.log('down')
@@ -192,11 +170,6 @@
         var newY2 = 0;
 
 
-        // joystick._onDownIncremental();
-        // joystick._onMoveIncremental(100,100);
-        // joystick._onMoveIncremental(Math.round(myGamepad.axes[0] * 100), Math.round(myGamepad.axes[1] * 100));
-        // joystick._onUp();
-
         setInterval(function () {
             const myGamepad = navigator.getGamepads()[0];
             
@@ -207,10 +180,6 @@
             newY = Math.round(joystick.deltaY()) * -1;
             newX2 = Math.round(joystick2.deltaX());
             newY2 = Math.round(joystick2.deltaY()) * -1;
-            // newX = Math.round(joystick.deltaX() + Math.round(myGamepad.axes[0] * 100));
-            // newY = Math.round(joystick.deltaY() + Math.round(myGamepad.axes[1] * 100)) * -1;
-            // newX2 = Math.round(joystick2.deltaX() + Math.round(myGamepad.axes[2] * 100));
-            // newY2 = Math.round(joystick2.deltaY() + Math.round(myGamepad.axes[3] * 100)) * -1;
 
             joystick._onDownIncremental();
             joystick._onMoveIncremental(Math.round(myGamepad.axes[0] * 100), Math.round(myGamepad.axes[1] * 100));
@@ -241,27 +210,8 @@
             prevY = newY;
             prevX2 = newX2;
             prevY2 = newY2;
-            // joystick2._onMove(joystick.deltaX(), joystick.deltaY());
-            // joystick2._onMove(425, 525);
+
         }, 1 / 10 * 1000);
-
-
-        // setInterval(() => {
-        //     var inputsEl = document.getElementById('inputs');
-
-        //     const myGamepad = navigator.getGamepads()[0]; // use the first gamepad
-        //     // console.log(`Left stick at (${myGamepad.axes[0]}, ${myGamepad.axes[1]})`);
-        //     // console.log(`Right stick at (${myGamepad.axes[2]}, ${myGamepad.axes[3]})`);
-
-        //     inputsEl.innerHTML = '<b>Inputs:</b> '
-        //         + ' Lx: ' + Math.round(myGamepad.axes[0] * 100)
-        //         + ' Ly: ' + Math.round(myGamepad.axes[1] * 100)
-        //         + ' Rx: ' + Math.round(myGamepad.axes[2] * 100)
-        //         + ' Ry: ' + Math.round(myGamepad.axes[3] * 100);
-
-        // }, 100) // print axes 10 times per second
-
-
 
 
         function setDisplay(id, display) {
