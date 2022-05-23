@@ -32,14 +32,13 @@
             text-align: center;
         }
 
-        #joy-containers {
-            
-        }
+        #joy-containers {}
 
         #joy-container {
             position: absolute;
             width: 25%;
             top: 150px;
+            left: 200px;
             height: calc(100vh - 200px);
             overflow: hidden;
             padding: 0;
@@ -47,14 +46,14 @@
             -webkit-user-select: none;
             -moz-user-select: none;
             border: solid 2px red;
-            
+
         }
 
         #joy-container2 {
             position: absolute;
             width: 25%;
-            top: 400px;
-            left: 500px;
+            top: 150px;
+            left: 800px;
             height: calc(100vh - 200px);
             overflow: hidden;
             padding: 0;
@@ -95,8 +94,9 @@
 <body>
     <h3 id="title">ESP8266 Vehicle Control</h3>
     <div id="joy-containers">
-    <div id="joy-container"></div>
-    <div id="joy-container2"></div></div>
+        <div id="joy-container"></div>
+        <div id="joy-container2"></div>
+    </div>
 
     <div id="info">
         <span id="button">
@@ -107,6 +107,8 @@
         <span id="touch-message">or Touch the screen to move</span>
         <br />
         <span id="result"></span>
+        <br />
+        <span id="inputs"></span>
 
     </div>
 
@@ -114,11 +116,16 @@
         <a href="./CVURobohawksVehicleWheelTuneHTML.html" id="wheel-adjust-link">Adjust wheel error</a>
     </div>
     <script src="./CVURobohawksVehicleJoyStickJS.js"></script>
+    <!-- <script src="./libgp.js"></script> -->
+    <!-- <script src="./gpcon.js"></script> -->
     <script>
         console.log("touchscreen is", VirtualJoystick.touchScreenAvailable() ? "available" : "not available");
 
         const messageA = 'or Touch the screen to move';
         const messageB = 'Touch screen disabled';
+
+        console.log(navigator.getGamepads());
+
 
         var joystick = new VirtualJoystick({
             container: document.getElementById('joy-container'),
@@ -126,7 +133,7 @@
             limitStickTravel: true,
             stationaryBase: true,
             centerBase: true,
-            sprungStick: true,
+            sprungStick: false,
             baseOutlineColor: 'black',
             baseCenterColor: 'black',
             stickColor: "rgba(255, 0, 0, 0.75)",
@@ -157,10 +164,15 @@
         //     joystick._onUp();
 
         //     //and make it still work if the real stick isn't connected
-            
+
         // }, 1 / 10 * 1000);
-        joystick._onDownIncremental();
-        joystick._onMoveIncremental(10, 10);
+        // joystick._onDownIncremental();
+        // joystick._onMoveIncremental(10, 10);
+
+
+        // setInterval(function() {
+
+        // },100);
 
         joystick.addEventListener('touchStart', function () {
             console.log('down')
@@ -168,18 +180,58 @@
         joystick.addEventListener('touchEnd', function () {
             console.log('up')
         })
+
         var prevX = 0;
         var prevY = 0;
         var newX = 0;
         var newY = 0;
 
-        setInterval_sendToESP(function () {
+        var prevX2 = 0;
+        var prevY2 = 0;
+        var newX2 = 0;
+        var newY2 = 0;
+
+
+        // joystick._onDownIncremental();
+        // joystick._onMoveIncremental(100,100);
+        // joystick._onMoveIncremental(Math.round(myGamepad.axes[0] * 100), Math.round(myGamepad.axes[1] * 100));
+        // joystick._onUp();
+
+        setInterval(function () {
+            const myGamepad = navigator.getGamepads()[0];
+            
             var outputEl = document.getElementById('result');
+            var inputsEl = document.getElementById('inputs');
+
             newX = Math.round(joystick.deltaX());
             newY = Math.round(joystick.deltaY()) * -1;
+            newX2 = Math.round(joystick2.deltaX());
+            newY2 = Math.round(joystick2.deltaY()) * -1;
+            // newX = Math.round(joystick.deltaX() + Math.round(myGamepad.axes[0] * 100));
+            // newY = Math.round(joystick.deltaY() + Math.round(myGamepad.axes[1] * 100)) * -1;
+            // newX2 = Math.round(joystick2.deltaX() + Math.round(myGamepad.axes[2] * 100));
+            // newY2 = Math.round(joystick2.deltaY() + Math.round(myGamepad.axes[3] * 100)) * -1;
+
+            joystick._onDownIncremental();
+            joystick._onMoveIncremental(Math.round(myGamepad.axes[0] * 100), Math.round(myGamepad.axes[1] * 100));
+            joystick._onUp();
+
+            joystick2._onDownIncremental();
+            joystick2._onMoveIncremental(Math.round(myGamepad.axes[2] * 100), Math.round(myGamepad.axes[3] * 100));
+            joystick2._onUp();
+
             outputEl.innerHTML = '<b>Position:</b> '
-                + ' X:' + newX
-                + ' Y:' + newY;
+                + ' Lx: ' + newX
+                + ' Ly: ' + newY
+                + ' Rx: ' + newX2
+                + ' Ry: ' + newY2;
+
+            inputsEl.innerHTML = '<b>Inputs:</b> '
+                + ' Lx: ' + Math.round(myGamepad.axes[0] * 100)
+                + ' Ly: ' + Math.round(myGamepad.axes[1] * 100)
+                + ' Rx: ' + Math.round(myGamepad.axes[2] * 100)
+                + ' Ry: ' + Math.round(myGamepad.axes[3] * 100);
+
             if (newX != prevX || newY != prevY) {
                 var xhr = new XMLHttpRequest();
                 xhr.open('PUT', "./jsData.html?x=" + newX + "&y=" + newY)
@@ -187,9 +239,30 @@
             }
             prevX = newX;
             prevY = newY;
-            // joystick2._onMove(joystick.deltaX()+200, joystick.deltaY()+200);
+            prevX2 = newX2;
+            prevY2 = newY2;
+            // joystick2._onMove(joystick.deltaX(), joystick.deltaY());
             // joystick2._onMove(425, 525);
         }, 1 / 10 * 1000);
+
+
+        // setInterval(() => {
+        //     var inputsEl = document.getElementById('inputs');
+
+        //     const myGamepad = navigator.getGamepads()[0]; // use the first gamepad
+        //     // console.log(`Left stick at (${myGamepad.axes[0]}, ${myGamepad.axes[1]})`);
+        //     // console.log(`Right stick at (${myGamepad.axes[2]}, ${myGamepad.axes[3]})`);
+
+        //     inputsEl.innerHTML = '<b>Inputs:</b> '
+        //         + ' Lx: ' + Math.round(myGamepad.axes[0] * 100)
+        //         + ' Ly: ' + Math.round(myGamepad.axes[1] * 100)
+        //         + ' Rx: ' + Math.round(myGamepad.axes[2] * 100)
+        //         + ' Ry: ' + Math.round(myGamepad.axes[3] * 100);
+
+        // }, 100) // print axes 10 times per second
+
+
+
 
         function setDisplay(id, display) {
             document.getElementById(id).style.display = display;

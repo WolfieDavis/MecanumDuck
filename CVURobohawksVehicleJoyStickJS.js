@@ -252,8 +252,9 @@ VirtualJoystick.prototype._onMove = function (x, y) {
 
 VirtualJoystick.prototype._onMoveIncremental = function (x, y) {
     if (this._pressed === true) {
-        this._stickX = x  - this._container.getBoundingClientRect().left;
-        this._stickY = y  - this._container.getBoundingClientRect().top;
+        this._stickX = this._baseX  + x;
+        this._stickY = this._baseY + y;
+
         // this._move(this._stickEl.style, x, y);
         this._move(this._stickEl.style, (this._stickX - this._stickEl.width / 2), (this._stickY - this._stickEl.height / 2));
     }
