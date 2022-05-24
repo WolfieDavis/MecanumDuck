@@ -13,7 +13,6 @@
             margin: 0;
             background-color: #BBB;
             font-size: 14pt;
-            font-family: Arial;
         }
 
         #title {
@@ -33,12 +32,11 @@
             text-align: center;
         }
 
-
         #joy-container {
             position: absolute;
-            width: 300;
+            width: 25%;
             top: 150px;
-            left: calc(100vw*1/5);
+            left: 150px;
             height: calc(100vh - 200px);
             overflow: hidden;
             padding: 0;
@@ -46,14 +44,13 @@
             -webkit-user-select: none;
             -moz-user-select: none;
             border: solid 2px red;
-
         }
 
         #joy-container2 {
             position: absolute;
-            width: 300;
+            width: 25%;
             top: 150px;
-            left: calc(100vw*3/5);
+            left: 600px;
             height: calc(100vh - 200px);
             overflow: hidden;
             padding: 0;
@@ -92,40 +89,49 @@
 </head>
 
 <body>
-    <h3 id="title">Mecanum Duck!</h3>
+    <h3 id="title">ESP8266 Vehicle Control</h3>
     <div id="joy-containers">
-        <div id="joy-container"></div>
-        <div id="joy-container2"></div>
-    </div>
+    <div id="joy-container"></div>
+    <div id="joy-container2"></div></div>
 
     <div id="info">
-        <!-- <span id="button">
+        <span id="button">
             <button id="run-autonomous" onclick="runAutonomous()">Run autonomous</button>
             <span id="autonomous-progress" style="display:none">Running autonomous...</span>
         </span>
-        </br> -->
-        <!-- <span id="touch-message">or Touch the screen to move</span>
-        <br /> -->
+        </br>
+        <span id="touch-message">or Touch the screen to move</span>
+        <br />
         <span id="result"></span>
-        <br />
-        <span id="inputs"></span>
-        <br />
-        <span id="wheels"></span>
 
     </div>
 
-    <!-- <div id="wheel-adjust">
+    <div id="wheel-adjust">
         <a href="./CVURobohawksVehicleWheelTuneHTML.html" id="wheel-adjust-link">Adjust wheel error</a>
-    </div> -->
+    </div>
     <script src="./CVURobohawksVehicleJoyStickJS.js"></script>
+    <script src="./gpcon.js"></script>
+    <script src="./libhtml.js"></script>
+    <script src="./libgp.js"></script>
     <script>
         console.log("touchscreen is", VirtualJoystick.touchScreenAvailable() ? "available" : "not available");
 
+        // let gp = navigator.getGamepads(0);
+
+        // // // Blindly assuming standard mapping
+        // let x = gp.axes[2];
+        // let y = gp.axes[3];
+
+        // console.log("Right stick X: " + x);
+        // console.log("Right stick Y: " + y);
+
+        // console.log(navigator.getGamepads());
+        // console.log("hello");
+
+
+
         const messageA = 'or Touch the screen to move';
         const messageB = 'Touch screen disabled';
-
-        console.log(navigator.getGamepads());
-
 
         var joystick = new VirtualJoystick({
             container: document.getElementById('joy-container'),
@@ -133,26 +139,12 @@
             limitStickTravel: true,
             stationaryBase: true,
             centerBase: true,
-            sprungStick: false,
+            sprungStick: true,
             baseOutlineColor: 'black',
             baseCenterColor: 'black',
             stickColor: "rgba(255, 0, 0, 0.75)",
 
         });
-
-        var joystick2 = new VirtualJoystick({
-            container: document.getElementById('joy-container2'),
-            mouseSupport: true,
-            limitStickTravel: true,
-            stationaryBase: true,
-            centerBase: true,
-            sprungStick: false,
-            baseOutlineColor: 'black',
-            baseCenterColor: 'black',
-            stickColor: "rgba(255, 0, 0, 0.75)",
-
-        });
-
 
         joystick.addEventListener('touchStart', function () {
             console.log('down')
@@ -166,45 +158,13 @@
         var newX = 0;
         var newY = 0;
 
-        var prevX2 = 0;
-        var prevY2 = 0;
-        var newX2 = 0;
-        var newY2 = 0;
-
-
         setInterval(function () {
-            const myGamepad = navigator.getGamepads()[0];
-
             var outputEl = document.getElementById('result');
-            var inputsEl = document.getElementById('inputs');
-
             newX = Math.round(joystick.deltaX());
             newY = Math.round(joystick.deltaY()) * -1;
-            newX2 = Math.round(joystick2.deltaX());
-            newY2 = Math.round(joystick2.deltaY()) * -1;
-
-            joystick._onDownIncremental();
-            // joystick._onMove(x,y);
-            joystick._onMoveIncremental(Math.round(myGamepad.axes[0] * 100), Math.round(myGamepad.axes[1] * 100));
-            joystick._onUp();
-
-            joystick2._onDownIncremental();
-            // joystick2._onMove(x,y);
-            joystick2._onMoveIncremental(Math.round(myGamepad.axes[2] * 100), Math.round(myGamepad.axes[3] * 100));
-            joystick2._onUp();
-
             outputEl.innerHTML = '<b>Position:</b> '
-                + ' Lx: ' + newX
-                + ' Ly: ' + newY
-                + ' Rx: ' + newX2
-                + ' Ry: ' + newY2;
-
-            inputsEl.innerHTML = '<b>Inputs:</b> '
-                + ' Lx: ' + Math.round(myGamepad.axes[0] * 100)
-                + ' Ly: ' + Math.round(myGamepad.axes[1] * 100)
-                + ' Rx: ' + Math.round(myGamepad.axes[2] * 100)
-                + ' Ry: ' + Math.round(myGamepad.axes[3] * 100);
-
+                + ' X:' + newX
+                + ' Y:' + newY;
             if (newX != prevX || newY != prevY) {
                 var xhr = new XMLHttpRequest();
                 xhr.open('PUT', "./jsData.html?x=" + newX + "&y=" + newY)
@@ -212,68 +172,44 @@
             }
             prevX = newX;
             prevY = newY;
-            prevX2 = newX2;
-            prevY2 = newY2;
-
         }, 1 / 10 * 1000);
 
 
 
+        var joystick2 = new VirtualJoystick({
+            container: document.getElementById('joy-container2'),
+            mouseSupport: true,
+            limitStickTravel: true,
+            stationaryBase: true,
+            centerBase: true,
+            sprungStick: true,
+            baseOutlineColor: 'black',
+            baseCenterColor: 'black',
+            stickColor: "rgba(255, 0, 0, 0.75)",
 
+        });
 
+        joystick2.addEventListener('touchStart', function () {
+            console.log('down')
+        })
+        joystick2.addEventListener('touchEnd', function () {
+            console.log('up')
+        })
 
-        var mLF;
-        var mLB;
-        var mRF;
-        var mRB;
+        // setInterval_realStickControl(function () {
+        //     //check if realstick !=0
+        //     //if it doesn't, get the position and set the virtual joy to be controlled by it
+        //     joystick._onDownIncremental();
+        //     //move the virtual joy to the correct position
+        //     joystick._onMoveIncremental(10,10);
+        //     //if the realsitck =0, release the virtual stick.(and set to 0)
+        //     joystick.onUp();
+        //     //and make it still work if the real stick isn't connected
+        // }, 1 / 10 * 1000);
 
-        setInterval(function () {
-            const myGamepad = navigator.getGamepads()[0];
-            var leftX = myGamepad.axes[0];
-            var rightX = myGamepad.axes[2];
-            var rightY = myGamepad.axes[3];
-
-            var maxPower = 1;
-
-
-            if (Math.abs(leftX) > .1 || Math.abs(rightX) > .1 || Math.abs(rightY) > .1) {
-                drive(maxPower, rateCurve(-rightY, 1.7), rateCurve(-leftX, 1.7) * 0.7 / 0.9, rateCurve(rightX, 1.7));
-            } else {
-                drive(0,0,0,0);
-            }
-
-
-            document.getElementById('wheels').innerHTML = '<b>Wheels:</b> '
-                + ' mLF: ' + Math.round(mLF*100)
-                + ' mLB: ' + Math.round(mLB*100)
-                + ' mRF: ' + Math.round(mRF*100)
-                + ' mRB: ' + Math.round(mRB*100);
-
-        }, 100);
-
-        function drive(power, forward, yaw, strafe) {
-            Forward = forward * power;
-            Yaw = yaw * power;
-            Strafe = strafe * power;
-            
-            mRF = (Forward + Yaw - Strafe);
-            mLF = (Forward - Yaw + Strafe);
-            mRB = (Forward + Yaw + Strafe);
-            mLB = (Forward - Yaw - Strafe);
-
-            return(mRF, mLF, mRB, mLB);
-        }
-
-        function rateCurve(input, rate) {
-            return Math.pow(Math.abs(input), rate) * ((input > 0) ? 1 : -1);
-        }
-
-
-
-
-
-
-
+        joystick._onDownIncremental();
+            //move the virtual joy to the correct position
+            joystick._onMoveIncremental(10,10);
 
 
         function setDisplay(id, display) {
