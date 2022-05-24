@@ -109,6 +109,8 @@
         <span id="result"></span>
         <br />
         <span id="inputs"></span>
+        <br />
+        <span id="wheels"></span>
 
     </div>
 
@@ -172,7 +174,7 @@
 
         setInterval(function () {
             const myGamepad = navigator.getGamepads()[0];
-            
+
             var outputEl = document.getElementById('result');
             var inputsEl = document.getElementById('inputs');
 
@@ -182,10 +184,12 @@
             newY2 = Math.round(joystick2.deltaY()) * -1;
 
             joystick._onDownIncremental();
+            // joystick._onMove(x,y);
             joystick._onMoveIncremental(Math.round(myGamepad.axes[0] * 100), Math.round(myGamepad.axes[1] * 100));
             joystick._onUp();
 
             joystick2._onDownIncremental();
+            // joystick2._onMove(x,y);
             joystick2._onMoveIncremental(Math.round(myGamepad.axes[2] * 100), Math.round(myGamepad.axes[3] * 100));
             joystick2._onUp();
 
@@ -212,6 +216,64 @@
             prevY2 = newY2;
 
         }, 1 / 10 * 1000);
+
+
+
+
+
+
+        var mLF;
+        var mLB;
+        var mRF;
+        var mRB;
+
+        setInterval(function () {
+            const myGamepad = navigator.getGamepads()[0];
+            var leftX = myGamepad.axes[0];
+            var rightX = myGamepad.axes[2];
+            var rightY = myGamepad.axes[3];
+
+            var maxPower = 1;
+
+
+            if (Math.abs(leftX) > .1 || Math.abs(rightX) > .1 || Math.abs(rightY) > .1) {
+                drive(maxPower, rateCurve(-rightY, 1.7), rateCurve(-leftX, 1.7) * 0.7 / 0.9, rateCurve(rightX, 1.7));
+            } else {
+                drive(0,0,0,0);
+            }
+
+
+            document.getElementById('wheels').innerHTML = '<b>Wheels:</b> '
+                + ' mLF: ' + Math.round(mLF*100)
+                + ' mLB: ' + Math.round(mLB*100)
+                + ' mRF: ' + Math.round(mRF*100)
+                + ' mRB: ' + Math.round(mRB*100);
+
+        }, 100);
+
+        function drive(power, forward, yaw, strafe) {
+            Forward = forward * power;
+            Yaw = yaw * power;
+            Strafe = strafe * power;
+            
+            mRF = (Forward + Yaw - Strafe);
+            mLF = (Forward - Yaw + Strafe);
+            mRB = (Forward + Yaw + Strafe);
+            mLB = (Forward - Yaw - Strafe);
+
+            return(mRF, mLF, mRB, mLB);
+        }
+
+        function rateCurve(input, rate) {
+            return Math.pow(Math.abs(input), rate) * ((input > 0) ? 1 : -1);
+        }
+
+
+
+
+
+
+
 
 
         function setDisplay(id, display) {

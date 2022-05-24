@@ -15,8 +15,8 @@
 
 
 // declare the variables/ objects
-char wifiName[] = "CSorceWiFi",      //the name of the wifi network that will be created
-    wifiPassword[] = "CaileanSorce"; //the password to join the wifi network. MUST BE >= 8 characters
+char wifiName[] = "MecanumDuck",      //the name of the wifi network that will be created
+    wifiPassword[] = "quackquack"; //the password to join the wifi network. MUST BE >= 8 characters
 
 int joyStickX = 0, joyStickY = 0,    //used to store the joyStick positions. updated with the wifi joystick
     rightServoSpeed, leftServoSpeed, //used to store the speeds for the servos
