@@ -18,34 +18,34 @@ char wifiName[] = "MecanumDuck",   // the name of the wifi network that will be 
     wifiPassword[] = "quackquack"; // the password to join the wifi network. MUST BE >= 8 characters
 
 // int joyLX, joyRX, joyRY;
-float mLFinput, mLBinput, mRFinput, mRBinput; //float??
+int mLFinput, mLBinput, mRFinput, mRBinput; //float??
 
 CVURobohawksVehicleWiFi WiFiControl;
 
 const int flashButton = 0; // the flash button on the nodemcu is on GPIO 0 (thats esp8266 GPIO 0, not D0)
 
-const int mLFpwm = 12;
-const int mLFin1 = 11;
-const int mLFin2 = 7;
-const int mLFoffset = 1; // side offset?? maybe?
+// const int mLFpwm = 12;
+// const int mLFin1 = 11;
+// const int mLFin2 = 7;
+// const int mLFoffset = 1; // side offset?? maybe?
 
-const int mLBpwm = 5;
-const int mLBin1 = 11;
-const int mLBin2 = 13;
-const int mLBoffset = 1; // side offset?? maybe?
+// const int mLBpwm = 5;
+// const int mLBin1 = 11;
+// const int mLBin2 = 13;
+// const int mLBoffset = 1; // side offset?? maybe?
 
-const int mRFpwm = 15;
-const int mRFin1 = 1;
-const int mRFin2 = 3;
-const int mRFoffset = -1; // side offset?? maybe?
+// const int mRFpwm = 15;
+// const int mRFin1 = 1;
+// const int mRFin2 = 3;
+// const int mRFoffset = -1; // side offset?? maybe?
 
-const int mRBpwm = 4;
-const int mRBin1 = 16;
-const int mRBin2 = 5;
-const int mRBoffset = -1; // side offset?? maybe?
+// const int mRBpwm = 4;
+// const int mRBin1 = 16;
+// const int mRBin2 = 5;
+// const int mRBoffset = -1; // side offset?? maybe?
 
-const int STBYfront = 14;
-const int STBYrear = 12;
+// const int STBYfront = 14;
+// const int STBYrear = 12;
 
 // Motor mLF = Motor(mLFin1, mLFin2, mLFpwm, mLFoffset, STBYfront);
 // Motor mLB = Motor(mLBin1, mLBin2, mLBpwm, mLBoffset, STBYfront);

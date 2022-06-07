@@ -261,7 +261,7 @@ R"====(
 
             mLFprev = mLF;
             mLBprev = mLB;
-            mRFprev = mRF;
+            mRFprev = mRF;    
             mRBprev = mRB;
 
         }, 100);
