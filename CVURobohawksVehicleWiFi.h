@@ -96,7 +96,7 @@ public:
    */
   // void setUpWiFi(char *wifiName, char *wifiPass, int chanel, int &joyStickXVar, int &joyStickYVar,
   //                int &leftWheelError, int &rightWheelError, void saveWheelErrorFunction(int, int), void autoFunction());
-  void setUpWiFi(char *wifiName, char *wifiPass, int chanel, int &mLF, int &mLB, int &mRF, int &mRB)
+  void setUpWiFi(char *wifiName, char *wifiPass, int chanel, int &mLF, int &mLB, int &mRF, int &mRB);
 
       /**
        * @brief checks for any updates from the wifi client (the controller)
